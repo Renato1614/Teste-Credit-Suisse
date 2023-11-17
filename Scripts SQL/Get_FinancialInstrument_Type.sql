@@ -2,14 +2,8 @@ CREATE PROCEDURE [dbo].[Get_FinancialInstrument_Type]
 
 AS
 	declare @MarketValue decimal
+	DECLARE @FINANCIAL_TYPE table (Id INT, Name VARCHAR(20))
 
-	DROP TABLE #TEMP_FINANCIAL_TYPE
-	DROP TABLE #TEMP_FINANCIAL
-
-	CREATE TABLE #TEMP_FINANCIAL_TYPE
-	(
-		Name VARCHAR(20)
-	);
 
 	SELECT FinancialInstrumentID,MarketValue
 	INTO #TEMP_FINANCIAL
@@ -21,24 +15,29 @@ AS
 
 		IF (@MarketValue < 1000000)
 		BEGIN 
+			INSERT INTO @FINANCIAL_TYPE (Name)
 			SELECT Name 
-			INTO #TEMP_FINANCIAL_TYPE 
 			FROM FinancialInstrumentType
-			WHERE Id =1;
+			WHERE FinancialInstrumentTypeID =1;
 		END
 
 		ELSE IF (@MarketValue >=1000000 AND @MarketValue>=1000000)
 		BEGIN 
-			INSERT INTO #TEMP_FINANCIAL_TYPE (Name) VALUES ('MEDIUM VALUE');
-
+			INSERT INTO @FINANCIAL_TYPE (Name)
+			SELECT Name 
+			FROM FinancialInstrumentType
+			WHERE FinancialInstrumentTypeID =2;
 		END
 
 		ELSE 
 		BEGIN 
-			INSERT INTO #TEMP_FINANCIAL_TYPE (Name) VALUES ('HIGH VALUE');
+			INSERT INTO @FINANCIAL_TYPE (Name)
+			SELECT Name 
+			FROM FinancialInstrumentType
+			WHERE FinancialInstrumentTypeID =3;
 		END
 
 	    DELETE FROM #TEMP_FINANCIAL WHERE MarketValue = @MarketValue
 	end
 
-	select * from  @FI
+	select * from  @FINANCIAL_TYPE
