@@ -1,7 +1,8 @@
-﻿// See https://aka.ms/new-console-template for more information
+﻿using System.Text.Json;
 using Teste;
 using Teste.Factories;
 using Teste.Interfaces;
+using Teste.Models;
 
 var inputs = new List<InputDto>{
     new InputDto(800000, "Stock"),
@@ -17,7 +18,7 @@ foreach (var input in inputs)
     financialInstruments.Add(FinancialInstrumentFactory.Create(input));
 }
 
-foreach (var financialInstrument in financialInstruments)
-{
-    System.Console.WriteLine(financialInstrument.Type);   
-}
+var output = new OutputDto();
+output.InstrumentCategories = financialInstruments.Select(i=>i.Type).ToList();
+
+Console.WriteLine(JsonSerializer.Serialize(output));
